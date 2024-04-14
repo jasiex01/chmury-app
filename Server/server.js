@@ -1,9 +1,11 @@
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
+const server_address = "http://" + process.env.GLOBAL_IP + ":5173"
+
 const httpServer = createServer();
 const io = new Server(httpServer, {
-  cors: "http://localhost:5174/",
+  cors: server_address,
 });
 
 const allUsers = {};

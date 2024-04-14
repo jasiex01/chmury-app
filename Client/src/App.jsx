@@ -110,7 +110,9 @@ const App = () => {
     const username = inputName;
     setPlayerName(username);
 
-    const newSocket = io("http://localhost:3000", {
+    const socket_io_address = "http://" + process.env.GLOBAL_IP + ":3000"
+
+    const newSocket = io(socket_io_address, {
       autoConnect: true,
     });
 

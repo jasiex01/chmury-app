@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import Square from "./Square/Square";
 import { io } from "socket.io-client";
-import Swal from "sweetalert2";
 
 const renderFrom = [
   [1, 2, 3],
@@ -110,7 +109,9 @@ const App = () => {
     const username = inputName;
     setPlayerName(username);
 
-    const socket_io_address = "http://" + process.env.GLOBAL_IP + ":3000"
+    //console.log(process.env.GLOBAL_IP);
+    console.log(import.meta.env.VITE_GLOBAL_IP);
+    const socket_io_address = "http://" + import.meta.env.VITE_GLOBAL_IP + ":3000"
 
     const newSocket = io(socket_io_address, {
       autoConnect: true,

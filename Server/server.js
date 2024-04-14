@@ -1,7 +1,8 @@
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
-const server_address = "http://" + process.env.GLOBAL_IP + ":5173"
+console.log(process.env.VITE_GLOBAL_IP);
+const server_address = "http://" + process.env.VITE_GLOBAL_IP + ":5173"
 
 const httpServer = createServer();
 const io = new Server(httpServer, {

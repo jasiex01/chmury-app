@@ -10,6 +10,8 @@ services:
     volumes:
       - ./Server:/server
     working_dir: /server
+    environment:
+      - VITE_GLOBAL_IP=${VITE_GLOBAL_IP}
     command: node server.js
     
   tic-tac-toe-app:
@@ -22,4 +24,6 @@ services:
       - ./Client:/app
       - /app/node_modules
     working_dir: /app
+    environment:
+      - VITE_GLOBAL_IP=${VITE_GLOBAL_IP}
     command: npm run dev

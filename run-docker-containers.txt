@@ -9,3 +9,9 @@ docker run -p 5173:5173 tic-tac-toe-app
 Docker compose:
 
 docker-compose up --build
+
+Remember to change time
+
+Connect via ssh:
+go to the terraform folder and
+ssh -i "tic-tac-toe-key" ec2-user@ec2-44-204-155-18.compute-1.amazonaws.com

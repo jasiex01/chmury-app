@@ -1,0 +1,11 @@
+Build image:
+docker build -t socket-io-server .
+docker build -t tic-tac-toe-app .
+
+Run container:
+docker run -p 3000:3000 -d socket-io-server
+docker run -p 5173:5173 tic-tac-toe-app
+
+Docker compose:
+
+docker-compose up --build

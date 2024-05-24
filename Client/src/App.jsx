@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import Square from "./Square/Square";
 import { io } from "socket.io-client";
+import LoginScreen from "./LoginPage";
+import { authenticate, getNick, refreshSession, logout } from "./authenticate";
 
 const renderFrom = [
   [1, 2, 3],
@@ -15,11 +17,11 @@ const App = () => {
   const [finishedState, setFinishetState] = useState(false);
   const [finishedArrayState, setFinishedArrayState] = useState([]);
   const [playOnline, setPlayOnline] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [socket, setSocket] = useState(null);
   const [playerName, setPlayerName] = useState("");
   const [opponentName, setOpponentName] = useState(null);
   const [playingAs, setPlayingAs] = useState(null);
-  const [inputName, setInputName] = useState("");
 
   const checkWinner = () => {
     // row dynamic
@@ -104,17 +106,19 @@ const App = () => {
   });
 
   async function playOnlineClick() {
-    if (!inputName) return;
-
-    const username = inputName;
+    const username = getNick();
     setPlayerName(username);
 
     //console.log(process.env.GLOBAL_IP);
     console.log(import.meta.env.VITE_GLOBAL_IP);
     const socket_io_address = "http://" + import.meta.env.VITE_GLOBAL_IP + ":3000"
 
+    refreshSession();
     const newSocket = io(socket_io_address, {
       autoConnect: true,
+      extraHeaders: {
+        "token": localStorage.getItem('token')
+      }
     });
 
     newSocket?.emit("request_to_play", {
@@ -124,21 +128,32 @@ const App = () => {
     setSocket(newSocket);
   }
 
-  if (!playOnline && !playerName) {
+  const handleLogout=()=>{
+    logout();
+    setLoggedIn(false);
+    localStorage.removeItem('token');
+  };
+
+  if (!loggedIn || localStorage.getItem('token') === null) {
+    console.log("logged in: " + loggedIn);
+   return (<LoginScreen setLoggedIn={setLoggedIn}/>)
+  }
+
+  if (!playOnline) {
     return (
       <div className="main-div">
         <h1 className="game-heading water-background">Tic Tac Toe</h1>
-        <h2>Enter your name to play online</h2>
-        <input
-          type="text"
-          value={inputName}
-          onChange={(e) => setInputName(e.target.value)}
-          placeholder="Enter your name"
-          className="input-name"
-        />
         <button onClick={playOnlineClick} className="playOnline">
           Play
         </button>
+        <button
+            style={{margin:"10px"}}
+            variant='contained'
+            onClick={handleLogout}
+            className="logout"
+          >
+            Logout
+          </button>
       </div>
     );
   }
@@ -147,12 +162,28 @@ const App = () => {
     return (
       <div className="waiting">
         <p>Waiting for opponent</p>
+        <button
+            style={{margin:"10px", marginLeft:"50px"}}
+            variant='contained'
+            onClick={handleLogout}
+            className="logout"
+          >
+            Logout
+          </button>
       </div>
     );
   }
 
   return (
     <div className="main-div">
+      <button
+            style={{margin:"10px"}}
+            variant='contained'
+            onClick={handleLogout}
+            className="logout"
+          >
+            Logout
+          </button>
       <h1 className="game-heading water-background">Tic Tac Toe</h1>
       <div className="move-detection">
         <div
